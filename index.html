@@ -151,14 +151,14 @@
     const textBox = document.getElementById("textBox");
 
     startGameButton.addEventListener("click", () => {
-      menuOverlay.style.display = "none"; // Hide the menu
-      textBox.style.display = "block"; // Show the text box
-      startCutscene(); // Start the cutscene
+      menuOverlay.style.display = "none";
+      textBox.style.display = "block";
+      startCutscene();
     });
 
     let TILE_SIZE = 64;
-    let MAP_WIDTH = 50; // 50 tiles wide
-    let MAP_HEIGHT = 50; // 50 tiles tall
+    let MAP_WIDTH = 50;
+    let MAP_HEIGHT = 50;
 
     let SPRITE_SHEET = new Image();
     SPRITE_SHEET.src = "sprite_blu_hat.png";
@@ -177,7 +177,7 @@
       x: 700,
       y: 700,
       size: TILE_SIZE,
-      speed: 4,
+      speed: 5,
       direction: 0,
     };
 
@@ -242,16 +242,13 @@
 
     let keys = {};
     window.addEventListener("keydown", (e) => {
-      keys[e.key.toLowerCase()] = true; // Use lowercase for consistency
-      console.log(`Key down: ${e.key}`); // Debugging log
+      keys[e.key.toLowerCase()] = true;
     });
 
     window.addEventListener("keyup", (e) => {
-      keys[e.key.toLowerCase()] = false; // Use lowercase for consistency
-      console.log(`Key up: ${e.key}`); // Debugging log
+      keys[e.key.toLowerCase()] = false;
     });
 
-    // Basic rectangle collision detection
     function isColliding(rect1, rect2) {
       return (
         rect1.x < rect2.x + rect2.width &&
@@ -262,7 +259,6 @@
     }
     
 
-    // Check collision with obstacles for a proposed new position
     function canMove(newX, newY) {
       let playerBox = {
         x: newX,
@@ -275,12 +271,11 @@
           return false;
         }
       }
-      // Skip collision check for the NPC
       return true;
     }
 
     let NPC_SPRITE = new Image();
-    NPC_SPRITE.src = "npc1.png"; // Use a single sprite for all NPCs
+    NPC_SPRITE.src = "npc1.png";
 
     let npcs = [
       {
@@ -289,7 +284,7 @@
         width: TILE_SIZE,
         height: TILE_SIZE,
         message: "What do you want to do first at Job Hunting Village?",
-        screenClass: "npc1-screen", // Use CSS class instead of inline styles
+        screenClass: "npc1-screen",
         choices: ["Look for a partner in crime!", "Explore the village on my own.", "Goodbye"],
         responses: {
           "Look for a partner in crime!": {
@@ -340,7 +335,7 @@
         width: TILE_SIZE,
         height: TILE_SIZE,
         message: "Find out where your heart is taking you! Touch the crystal ball to see the future. In your imagination, what kind of person will you be in the future?",
-        screenClass: "npc2-screen", // Use CSS class instead of inline styles
+        screenClass: "npc2-screen",
         choices: ["I'll become a master in my field!", "I will create my own ideal kingdom!", "See you later."],
         responses: {
           "I'll become a master in my field!": {
@@ -363,11 +358,10 @@
         width: TILE_SIZE,
         height: TILE_SIZE,
         message: "You seem to visionary intelligent type. 12% of people are like you. You are a good fit for the follwing jobs: artist, designer, and creative director.",
-        screenClass: "npc3-screen", // Use CSS class instead of inline styles
-        choices: ["One that showcases professional certificates, and clearly shows my abilities and experience.", "One that showcases my creativity and artistic eye, and shows off my personality!", "Bye."],
+        screenClass: "npc3-screen",
+        choices: ["Ok thanks! Goodbye."],
         responses: {
-          
-          "Bye.": {
+          "Ok thanks! Goodbye.": {
             message: "",
             choices: null,
           },
@@ -379,7 +373,7 @@
         width: TILE_SIZE,
         height: TILE_SIZE,
         message: "Transform Your CV! From here, you will train skills to make your CV more powerful. What kind of CV do you wish to make?",
-        screenClass: "npc4-screen", // Use CSS class instead of inline styles
+        screenClass: "npc4-screen",
         choices: ["One that showcases professional certificates, and clearly shows my abilities and experience.", "One that showcases my creativity and artistic eye, and shows off my personality!", "Goodbye"],
         responses: {
           "One that showcases professional certificates, and clearly shows my abilities and experience": {
@@ -402,7 +396,7 @@
         width: TILE_SIZE,
         height: TILE_SIZE,
         message: "Break time! Take a seat and have some water. At this time, what would you do?",
-        screenClass: "npc5-screen", // Use CSS class instead of inline styles
+        screenClass: "npc5-screen",
         choices: ["Eat fruits that will refill my energy!", "Socialize with other villagers to gain insights!", "Goodbye"],
         responses: {
           "Eat fruits that will refill my energy!": {
@@ -425,7 +419,7 @@
         width: TILE_SIZE,
         height: TILE_SIZE,
         message: "Congratulations on completing the extensive job hunting training and getting your dream position! How are you going to celebrate this milestone?",
-        screenClass: "npc6-screen", // Use CSS class instead of inline styles
+        screenClass: "npc6-screen",
         choices: ["Dinner with friends and family to share the good news!", "Buy a flight ticket. Gotta reward myself for the hardwork!", "Thanks"],
         responses: {
           "Dinner with friends and family to share the good news!": {
@@ -456,19 +450,18 @@
     let interactionScreen = {
       active: false,
       message: "",
-      width: 400, // Set a default width
-      height: 200, // Set a default height
+      width: 400,
+      height: 200,
       backgroundColor: "",
       textColor: "",
       font: "",
       padding: 20,
-      nextScreen: null, // Add property for the next screen
-      screenClass: "", // Add screenClass property
+      nextScreen: null,
+      screenClass: "",
     };
 
-    let a = null, b = null, c = null; // Variables to store answers
+    let a = null, b = null, c = null;
 
-    // Add event listener for number key presses (1, 2, 3)
     window.addEventListener("keydown", (e) => {
       if (interactionScreen.active && interactionScreen.choices) {
         if (e.key === "1" || e.key === "2" || e.key === "3") {
@@ -476,7 +469,6 @@
           if (choiceIndex >= 0 && choiceIndex < interactionScreen.choices.length) {
             let selectedChoice = interactionScreen.choices[choiceIndex];
             
-            // Find the NPC based on x and y coordinates
             let npc = npcs.find(npc => 
               Math.abs(npc.x - player.x) < TILE_SIZE && 
               Math.abs(npc.y - player.y) < TILE_SIZE
@@ -487,7 +479,6 @@
               interactionScreen.message = response.message;
               interactionScreen.choices = response.choices;
               
-              // If the selected choice is "Goodbye", close the interaction screen
               if (selectedChoice === "Goodbye" || response.message === "") {
                 interactionScreen.active = false;
                 interactionScreen.message = "";
@@ -506,16 +497,14 @@
     let backgroundMusic = document.getElementById("backgroundMusic");
     let interactionSound = document.getElementById("interactionSound");
 
-    backgroundMusic.volume = 0.1; // Adjust background music volume (0.0 to 1.0)
-    interactionSound.volume = 0.5; // Adjust interaction sound volume (0.0 to 1.0)
+    backgroundMusic.volume = 0.1;
+    interactionSound.volume = 0.5;
 
-    // Function to play sound
     function playSound(soundElement) {
-      soundElement.currentTime = 0; // Reset time to start
+      soundElement.currentTime = 0;
       soundElement.play();
     }
 
-    // Store and restore music playback state
     function storePlaybackState() {
       localStorage.setItem('musicPlaying', backgroundMusic.paused ? 'false' : 'true');
     }
@@ -523,28 +512,24 @@
     function restorePlaybackState() {
       const isPlaying = localStorage.getItem('musicPlaying') === 'true';
       if (isPlaying) {
-        // Ensure the audio is loaded before attempting to play
         if (backgroundMusic.readyState >= 4) {
           backgroundMusic.play();
         } else {
           backgroundMusic.addEventListener('canplay', function() {
             backgroundMusic.play();
-            backgroundMusic.removeEventListener('canplay', arguments.callee); // Remove the listener after playing
+            backgroundMusic.removeEventListener('canplay', arguments.callee);
           });
         }
       }
     }
 
-    // Start music on first user interaction
     document.addEventListener('click', function() {
       backgroundMusic.play();
-      storePlaybackState(); // Store the playback state
+      storePlaybackState();
     });
 
-    // Restore playback state on page load
     window.addEventListener('load', restorePlaybackState);
 
-    // Store playback state before the page is unloaded
     window.addEventListener('beforeunload', storePlaybackState);
 
     function update() {
@@ -552,29 +537,28 @@
       let newX = player.x;
       let newY = player.y;
 
-      if (!interactionScreen.active) { // Disable movement when interaction screen is active
+      if (!interactionScreen.active) {
         if (keys["w"]) {
           newY = player.y - player.speed;
-          player.direction = 3; // Up
+          player.direction = 3;
           moving = true;
         }
         if (keys["s"]) {
           newY = player.y + player.speed;
-          player.direction = 0; // Down
+          player.direction = 0;
           moving = true;
         }
         if (keys["a"]) {
           newX = player.x - player.speed;
-          player.direction = 1; // Left
+          player.direction = 1;
           moving = true;
         }
         if (keys["d"]) {
           newX = player.x + player.speed;
-          player.direction = 2; // Right
+          player.direction = 2;
           moving = true;
         }
 
-        // Only update position if no collision would occur
         if (canMove(newX, newY)) {
           player.x = newX;
           player.y = newY;
@@ -591,27 +575,26 @@
         currentFrame = 0;
       }
 
-      // Toggle interaction screen
       if (keys["e"]) {
         for (let npc of npcs) {
           if (isNearNPC(player, npc)) {
             interactionScreen.active = !interactionScreen.active;
             if (interactionScreen.active) {
               interactionScreen.message = npc.message;
-              interactionScreen.width = 400; // Set a default width
-              interactionScreen.height = 200; // Set a default height
-              interactionScreen.backgroundColor = ""; // Clear background color
-              interactionScreen.textColor = ""; // Clear text color
-              interactionScreen.font = ""; // Clear font
-              interactionScreen.choices = npc.choices; // Add choices to interaction screen
-              interactionScreen.screenClass = npc.screenClass; // Set the screenClass
+              interactionScreen.width = 400;
+              interactionScreen.height = 200;
+              interactionScreen.backgroundColor = "";
+              interactionScreen.textColor = "";
+              interactionScreen.font = "";
+              interactionScreen.choices = npc.choices;
+              interactionScreen.screenClass = npc.screenClass;
               playSound(interactionSound);
             } else {
               interactionScreen.message = "";
-              interactionScreen.choices = null; // Clear choices when screen is closed
-              interactionScreen.screenClass = ""; // Clear the screenClass
+              interactionScreen.choices = null;
+              interactionScreen.screenClass = "";
             }
-            keys["e"] = false; // Prevent repeated toggling
+            keys["e"] = false;
             break;
           }
         }
@@ -621,16 +604,13 @@
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      // Ensure camera coordinates follow the player and stay within bounds
       let maxCamX = Math.max(0, MAP_WIDTH * TILE_SIZE - canvas.width);
       let maxCamY = Math.max(0, MAP_HEIGHT * TILE_SIZE - canvas.height);
       let camX = Math.max(0, Math.min(player.x - canvas.width / 2, maxCamX));
       let camY = Math.max(0, Math.min(player.y - canvas.height / 2, maxCamY));
 
-      // Draw the map
       ctx.drawImage(TILE_MAP, -camX, -camY, MAP_WIDTH * TILE_SIZE, MAP_HEIGHT * TILE_SIZE);
 
-      // Draw all NPCs
       for (let npc of npcs) {
         ctx.drawImage(
           NPC_SPRITE,
@@ -642,7 +622,6 @@
         );
       }
 
-      // Draw the player sprite
       let sx = currentFrame * FRAME_SIZE;
       let sy = player.direction * FRAME_SIZE;
       ctx.drawImage(
@@ -657,16 +636,13 @@
         TILE_SIZE
       );
 
-      // Draw interaction screen if active
       if (interactionScreen.active) {
         let popupX = (canvas.width - interactionScreen.width) / 2;
         let popupY = (canvas.height - interactionScreen.height) / 2;
 
-        // Set custom font explicitly for the canvas context
         ctx.font = "24px 'CustomPixelFont', Arial, sans-serif";
         ctx.fillStyle = "white";
 
-        // Function to wrap text
         function wrapText(context, text, x, y, maxWidth, lineHeight) {
           let words = text.split(' ');
           let line = '';
@@ -684,10 +660,9 @@
             }
           }
           context.fillText(line, x, y);
-          return y; // Return the last y position
+          return y;
         }
 
-        // Calculate dynamic height
         let dynamicHeight = interactionScreen.padding + 24;
         dynamicHeight = wrapText(
           ctx,
@@ -715,12 +690,10 @@
 
         popupY = (canvas.height - interactionScreen.height) / 2;
 
-        // Draw popup background
         ctx.fillStyle = "rgba(0, 0, 0, 0.8)";
         ctx.fillRect(popupX, popupY, interactionScreen.width, interactionScreen.height);
 
-        // Reset textY for drawing text again
-        ctx.fillStyle = "white"; // Set text color to white
+        ctx.fillStyle = "white";
         let textY = wrapText(
           ctx,
           interactionScreen.message,
@@ -730,15 +703,14 @@
           30
         );
 
-        // Draw choices
         if (interactionScreen.choices) {
           for (let i = 0; i < interactionScreen.choices.length; i++) {
-            ctx.fillStyle = "white"; // Set text color to white
+            ctx.fillStyle = "white";
             textY = wrapText(
               ctx,
               `${i + 1}. ${interactionScreen.choices[i]}`,
               popupX + interactionScreen.padding,
-              textY + 50, // Start below the previous text
+              textY + 50,
               interactionScreen.width - 2 * interactionScreen.padding,
               30
             );
@@ -753,13 +725,6 @@
       requestAnimationFrame(gameLoop);
     }
 
-    // Start music on first user interaction
-    document.addEventListener('click', function() {
-      backgroundMusic.play();
-      storePlaybackState(); // Store the playback state
-    });
-
-    // Update guide overlay based on progress
     let guideSteps = [
       { id: 1, direction: "near the starting point" },
       { id: 2, direction: "Under NPC 1" },
@@ -779,7 +744,6 @@
       }
     }
 
-    // Modify interaction logic to update guide progress
     function handleInteraction(npcIndex) {
       if (guideSteps[currentStep] && guideSteps[currentStep].id === npcIndex) {
         currentStep++;
@@ -787,19 +751,17 @@
       }
     }
 
-    // Hook into interaction logic
     window.addEventListener("keydown", (e) => {
       if (e.key === "e") {
         for (let i = 0; i < npcs.length; i++) {
           if (isNearNPC(player, npcs[i])) {
-            handleInteraction(i + 1); // NPC index starts from 1
+            handleInteraction(i + 1);
             break;
           }
         }
       }
     });
 
-    // Initialize guide overlay
     updateGuideOverlay();
 
     gameLoop();
