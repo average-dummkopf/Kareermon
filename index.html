@@ -116,21 +116,36 @@
       cursor: pointer;
     }
 
+    .move-overlay {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background-color: rgba(0, 0, 0, 0.7);
+      color: white;
+      font: 16px 'CustomPixelFont', Arial, sans-serif;
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 1000;
+    }
+
+    .npc1-screen,
+    .npc2-screen,
+    .npc3-screen,
+    .npc4-screen,
+    .npc5-screen,
+    .npc6-screen {
+      max-width: 90%; /* Ensure the dialogue box doesn't exceed screen width */
+      max-height: 90%; /* Ensure the dialogue box doesn't exceed screen height */
+      overflow-wrap: break-word; /* Handle long text wrapping */
+      word-wrap: break-word;
+      overflow: auto; /* Add scroll if content exceeds box size */
+    }
+
   </style>
 </head>
 <body>
   <div id="menuOverlay">
     <h1>Game Menu</h1>
-    <button id="startGameButton">Start Game</button>
-  </div>
-  <canvas id="gameCanvas"></canvas>
-
-  <div class="guide-overlay" id="guideOverlay">
-    Guide: Interact with NPCs in order - 1 (near the starting point), 2 (south of NPC 1), 4 (east of NPC 2), 5 (north of NPC 4), 6 (southwest of NPC 5)
-  </div>
-
-  <audio id="backgroundMusic" loop autoplay>
-    <source src="Pokemon RubySapphireEmerald- Littleroot Town.mp3" type="audio/mp3">
     Your browser does not support the audio element.
   </audio>
 
@@ -751,6 +766,15 @@ startGameButton.addEventListener("click", () => {
 
     // Initialize guide overlay
     updateGuideOverlay();
+
+    // Show the move overlay first, then switch to the guide overlay
+    const moveOverlay = document.getElementById("moveOverlay");
+    const guideOverlay = document.getElementById("guideOverlay");
+
+    setTimeout(() => {
+      moveOverlay.style.display = "none";
+      guideOverlay.style.display = "block";
+    }, 3000); // Display "Move with WASD" for 3 seconds
 
     gameLoop();
   </script>
