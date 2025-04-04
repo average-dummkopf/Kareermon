@@ -146,14 +146,22 @@
 <body>
   <div id="menuOverlay">
     <h1>Game Menu</h1>
+    <button id="startGameButton">Start Game</button>
+  </div>
+  <canvas id="gameCanvas"></canvas>
+
+  <div class="move-overlay" id="moveOverlay">
+    Move with WASD
+  </div>
+  <div class="guide-overlay" id="guideOverlay" style="display: none;">
+    Guide: Interact with NPCs in order - 1 (near the starting point), 2 (under NPC 1), 5 (top right of the map), 4 (under NPC 4), 6 (under NPC 5)
+  </div>
+
+  <audio id="backgroundMusic" loop autoplay>
+    <source src="Pokemon RubySapphireEmerald- Littleroot Town.mp3" type="audio/mp3">
     Your browser does not support the audio element.
   </audio>
-
-  <audio id="interactionSound" >
-    <source src="interaction.wav" type="audio/wav">
-    Your browser does not support the audio element.
-  </audio>
-
+  
   <script>
     let canvas = document.getElementById("gameCanvas");
     let ctx = canvas.getContext("2d");
@@ -640,8 +648,63 @@ startGameButton.addEventListener("click", () => {
       }
     }
 
+    // Adjust interaction screen dimensions dynamically
+    function adjustInteractionScreenDimensions(message) {
+      const padding = 40; // Total padding for width and height
+      const maxWidth = canvas.width * 0.9; // 90% of canvas width
+      const maxHeight = canvas.height * 0.9; // 90% of canvas height
+
+      // Create a temporary canvas to measure text dimensions
+      const tempCtx = document.createElement("canvas").getContext("2d");
+      tempCtx.font = "24px 'CustomPixelFont', Arial, sans-serif";
+      const textMetrics = tempCtx.measureText(message);
+      
+      // Calculate width and height based on text dimensions
+      let width = Math.min(textMetrics.width + padding, maxWidth);
+      let height = Math.min(200 + padding, maxHeight); // Default height with padding
+
+      return { width, height };
+    }
+
+    // Modify interaction logic to adjust dimensions
+    function toggleInteractionScreen(npc) {
+      interactionScreen.active = !interactionScreen.active;
+      if (interactionScreen.active) {
+        interactionScreen.message = npc.message;
+        const dimensions = adjustInteractionScreenDimensions(npc.message);
+        interactionScreen.width = dimensions.width;
+        interactionScreen.height = dimensions.height;
+        interactionScreen.backgroundColor = ""; // Clear background color
+        interactionScreen.textColor = ""; // Clear text color
+        interactionScreen.font = ""; // Clear font
+        interactionScreen.choices = npc.choices; // Add choices to interaction screen
+        interactionScreen.screenClass = npc.screenClass; // Set the screenClass
+        playSound(interactionSound);
+      } else {
+        interactionScreen.message = "";
+        interactionScreen.choices = null; // Clear choices when screen is closed
+        interactionScreen.screenClass = ""; // Clear the screenClass
+      }
+    }
+
+    // Hook into interaction logic
+    window.addEventListener("keydown", (e) => {
+      if (e.key === "e") {
+        for (let npc of npcs) {
+          if (isNearNPC(player, npc)) {
+            toggleInteractionScreen(npc);
+            break;
+          }
+        }
+      }
+    });
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Ensure canvas dimensions match the window size
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
       // Ensure camera coordinates follow the player and stay within bounds
       let maxCamX = Math.max(0, MAP_WIDTH * TILE_SIZE - canvas.width);
@@ -693,11 +756,14 @@ startGameButton.addEventListener("click", () => {
         ctx.fillStyle = "white";
 
         // Draw popup text
-        ctx.fillText(
-          interactionScreen.message,
-          popupX + interactionScreen.padding,
-          popupY + interactionScreen.padding + 24
-        );
+        const lines = interactionScreen.message.split("\n");
+        lines.forEach((line, index) => {
+          ctx.fillText(
+            line,
+            popupX + interactionScreen.padding,
+            popupY + interactionScreen.padding + 24 + index * 30
+          );
+        });
 
         // Draw choices
         if (interactionScreen.choices) {
@@ -711,6 +777,12 @@ startGameButton.addEventListener("click", () => {
         }
       }
     }
+
+    // Ensure the canvas resizes with the window
+    window.addEventListener("resize", () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
 
     function gameLoop() {
       update();
